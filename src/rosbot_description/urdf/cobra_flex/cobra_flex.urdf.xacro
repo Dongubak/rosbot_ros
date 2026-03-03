@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="cobra_flex">
+
+    <!--
+    ============================================================
+    Cobra Flex — 최상위 URDF 파일
+    ============================================================
+    사용법 (launch 파일에서):
+      xacro cobra_flex.urdf.xacro use_sim:=false namespace:=""
+
+    포함 파일:
+      body.urdf.xacro         — 로봇 본체, 바퀴, 센서 링크/조인트
+      ros2_control.urdf.xacro — ros2_control 인터페이스 + Gazebo 플러그인
+    ============================================================
+    -->
+
+    <!-- ── 실행 시 전달되는 인자 ─────────────────────────────── -->
+    <xacro:arg name="use_sim"   default="false"/>
+    <xacro:arg name="namespace" default=""/>
+
+    <!-- ── 하위 파일 포함 ─────────────────────────────────────── -->
+    <xacro:include filename="$(find rosbot_description)/urdf/cobra_flex/body.urdf.xacro"/>
+    <xacro:include filename="$(find rosbot_description)/urdf/cobra_flex/ros2_control.urdf.xacro"/>
+
+    <!-- ── 로봇 구조 생성 ─────────────────────────────────────── -->
+    <xacro:cobra_flex_body/>
+
+    <xacro:cobra_flex_ros2_control
+        use_sim="$(arg use_sim)"
+        namespace="$(arg namespace)"/>
+
+</robot>

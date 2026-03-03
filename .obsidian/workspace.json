@@ -1,0 +1,221 @@
+{
+  "main": {
+    "id": "7216e56f45720df8",
+    "type": "split",
+    "children": [
+      {
+        "id": "7eafb68fbf39239f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "e2c7ae2e0246892b",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "새 탭"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "f59f79a628f1b08e",
+    "type": "split",
+    "children": [
+      {
+        "id": "279f23b83e7bd774",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6e8c28abb32db73a",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "파일 탐색기"
+            }
+          },
+          {
+            "id": "591ba1a0fe3bcbf7",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "검색"
+            }
+          },
+          {
+            "id": "d0cfb369f0a565ae",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "북마크"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "82b271a27710d55c",
+    "type": "split",
+    "children": [
+      {
+        "id": "1cfa6fad150a19cf",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "77c3e06a1791e6fd",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "doc/11_Cobra_Flex_적용_일정.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "11_Cobra_Flex_적용_일정 의 백링크"
+            }
+          },
+          {
+            "id": "36b579562253d97d",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "doc/11_Cobra_Flex_적용_일정.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "11_Cobra_Flex_적용_일정 의 나가는 링크"
+            }
+          },
+          {
+            "id": "b6f02e1cd58df813",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "태그"
+            }
+          },
+          {
+            "id": "6a3ec9ef5db877bb",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "모든 속성"
+            }
+          },
+          {
+            "id": "cafdf3c9a7aa98f9",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "doc/11_Cobra_Flex_적용_일정.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "11_Cobra_Flex_적용_일정 의 개요"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:빠른 전환기 열기": false,
+      "graph:그래프 뷰 열기": false,
+      "canvas:새 캔버스 만들기": false,
+      "daily-notes:오늘의 일일 노트 열기": false,
+      "templates:템플릿 삽입": false,
+      "command-palette:명령어 팔레트 열기": false,
+      "bases:새 베이스 생성하기": false
+    }
+  },
+  "active": "e2c7ae2e0246892b",
+  "lastOpenFiles": [
+    "doc/11_Cobra_Flex_적용_일정.md",
+    "src/ROS_API.md",
+    "src/README.md",
+    "src/MANIPULATOR.md",
+    "src/LICENSE",
+    "src/CONTRIBUTING.md",
+    "src/rosbot_utils/firmware/rosbot_xl/v1.4.0.bin",
+    "src/rosbot_utils/firmware/rosbot/v0.11.0.bin",
+    "src/rosbot_utils/config/rosbot_xl/laser_filter.yaml",
+    "src/rosbot_utils/config/rosbot/laser_filter.yaml",
+    "src/rosbot_utils/test/test_pep257.py",
+    "src/rosbot_utils/rosbot_utils/utils.py",
+    "src/rosbot_utils/rosbot_utils/flash_firmware_usb.py",
+    "src/rosbot_utils/rosbot_utils/flash_firmware_uart.py",
+    "src/rosbot_utils/rosbot_utils/flash_firmware.py",
+    "src/doc/용어집.md",
+    "src/doc/index.md",
+    "src/doc/11_Cobra_Flex_적용_일정.md",
+    "src/doc/10_Cobra_Flex_적용_가이드.md",
+    "src/doc/09_사용_여부_정리.md",
+    "src/doc/08_런치_시스템.md",
+    "src/doc/07_로컬라이제이션.md",
+    "src/doc/06_컨트롤러.md",
+    "src/doc/05_센서_통합.md",
+    "src/doc/04_하드웨어_인터페이스.md",
+    "src/doc/03_시스템_아키텍처.md",
+    "src/doc/02_패키지_구조.md",
+    "src/doc/01_프로젝트_개요.md",
+    "doc/10_Cobra_Flex_적용_가이드.md",
+    "doc/용어집.md",
+    "doc/index.md",
+    "doc/09_사용_여부_정리.md",
+    "doc/08_런치_시스템.md",
+    "doc/07_로컬라이제이션.md",
+    "doc/06_컨트롤러.md",
+    "doc/05_센서_통합.md"
+  ]
+}

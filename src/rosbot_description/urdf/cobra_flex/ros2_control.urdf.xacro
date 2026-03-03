@@ -1,0 +1,229 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!--
+    ============================================================
+    Cobra Flex — ros2_control 인터페이스 정의 (ros2_control.urdf.xacro)
+    ============================================================
+    포함 내용:
+      - ros2_control 하드웨어 인터페이스 선언 (실제/시뮬 조건부)
+      - 바퀴 4개 Command/State Interface
+      - IMU Sensor Interface
+      - Gazebo 플러그인 (use_sim=true 일 때만)
+
+    use_sim=false → rosbot_hardware_interfaces 플러그인 사용 (실제 하드웨어)
+    use_sim=true  → Gazebo Classic ros2_control 플러그인 사용
+    ============================================================
+    -->
+
+    <xacro:macro name="cobra_flex_ros2_control" params="use_sim namespace">
+
+        <!-- ═══════════════════════════════════════════════════════════
+             ros2_control — 구동 시스템 (바퀴 4개)
+        ═══════════════════════════════════════════════════════════ -->
+        <ros2_control name="cobra_flex_system" type="system">
+            <hardware>
+                <xacro:if value="${use_sim}">
+                    <!--
+                    Gazebo Classic 시뮬레이션용 플러그인
+                    ⚠️ TODO: Gazebo Ignition/Fortress 사용 시 아래로 교체:
+                             <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+                    -->
+                    <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+                </xacro:if>
+                <xacro:unless value="${use_sim}">
+                    <!--
+                    실제 하드웨어 플러그인
+                    ⚠️ TODO: Cobra Flex 전용 MCU 드라이버가 있다면 여기서 교체
+                             현재는 ROSbot 인터페이스를 사용 (Micro-ROS 기반)
+                             - /_motors_cmd   : Float32MultiArray [rr, rl, fr, fl]
+                             - /_motors_response : JointState (4개 바퀴)
+                    -->
+                    <plugin>rosbot_hardware_interfaces/RosbotSystem</plugin>
+                </xacro:unless>
+            </hardware>
+
+            <!--
+            바퀴 관절 인터페이스
+            이름이 body.urdf.xacro 의 wheel 매크로 이름과 반드시 일치해야 함
+            controllers.yaml 설정:
+              left_wheel_names:  [fl_wheel_joint, rl_wheel_joint]
+              right_wheel_names: [fr_wheel_joint, rr_wheel_joint]
+            -->
+            <joint name="fl_wheel_joint">
+                <command_interface name="velocity"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+            </joint>
+            <joint name="fr_wheel_joint">
+                <command_interface name="velocity"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+            </joint>
+            <joint name="rl_wheel_joint">
+                <command_interface name="velocity"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+            </joint>
+            <joint name="rr_wheel_joint">
+                <command_interface name="velocity"/>
+                <state_interface name="position"/>
+                <state_interface name="velocity"/>
+            </joint>
+        </ros2_control>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             ros2_control — IMU 센서
+        ═══════════════════════════════════════════════════════════ -->
+        <ros2_control name="cobra_flex_imu" type="sensor">
+            <hardware>
+                <xacro:if value="${use_sim}">
+                    <!--
+                    ⚠️ TODO: Gazebo Ignition 사용 시 아래로 교체:
+                             <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+                    -->
+                    <plugin>gazebo_ros2_control/GazeboSystem</plugin>
+                </xacro:if>
+                <xacro:unless value="${use_sim}">
+                    <!--
+                    ⚠️ TODO: Cobra Flex IMU 통신 방식에 따라 교체
+                             현재는 ROSbot 인터페이스를 사용 (Micro-ROS ~/imu 토픽)
+                    -->
+                    <plugin>rosbot_hardware_interfaces/RosbotImuSensor</plugin>
+                </xacro:unless>
+            </hardware>
+            <!--
+            IMU State Interface (10개)
+            controllers.yaml 의 imu_sensor_broadcaster sensor_name: "imu" 와 일치
+            -->
+            <sensor name="imu">
+                <state_interface name="orientation.x"/>
+                <state_interface name="orientation.y"/>
+                <state_interface name="orientation.z"/>
+                <state_interface name="orientation.w"/>
+                <state_interface name="angular_velocity.x"/>
+                <state_interface name="angular_velocity.y"/>
+                <state_interface name="angular_velocity.z"/>
+                <state_interface name="linear_acceleration.x"/>
+                <state_interface name="linear_acceleration.y"/>
+                <state_interface name="linear_acceleration.z"/>
+            </sensor>
+        </ros2_control>
+
+        <!-- ═══════════════════════════════════════════════════════════
+             Gazebo 플러그인 (use_sim=true 일 때만 활성화)
+        ═══════════════════════════════════════════════════════════ -->
+        <xacro:if value="${use_sim}">
+
+            <!-- ros2_control ↔ Gazebo Classic 연동 플러그인 -->
+            <!--
+            ⚠️ TODO: Gazebo Ignition 사용 시 이 블록 전체를 삭제하고
+                     gz_ros2_control 방식으로 교체 필요
+                     (rosbot_gazebo 패키지의 simulation.launch.py 참고)
+            -->
+            <gazebo>
+                <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+                    <robot_param>robot_description</robot_param>
+                    <robot_param_node>robot_state_publisher</robot_param_node>
+                </plugin>
+            </gazebo>
+
+            <!-- 바퀴 Gazebo 마찰 설정 (실제 주행 시뮬레이션 품질에 영향) -->
+            <!--
+            ⚠️ TODO: mu1/mu2 값은 바닥 재질에 맞게 조정
+                     실내 평평한 바닥: mu1=1.0, mu2=1.0
+                     미끄러운 바닥:   mu1=0.5, mu2=0.5
+            -->
+            <gazebo reference="fl_wheel_link">
+                <mu1>1.0</mu1><mu2>1.0</mu2>
+                <kp>1000000.0</kp><kd>1.0</kd>
+                <minDepth>0.001</minDepth>
+            </gazebo>
+            <gazebo reference="fr_wheel_link">
+                <mu1>1.0</mu1><mu2>1.0</mu2>
+                <kp>1000000.0</kp><kd>1.0</kd>
+                <minDepth>0.001</minDepth>
+            </gazebo>
+            <gazebo reference="rl_wheel_link">
+                <mu1>1.0</mu1><mu2>1.0</mu2>
+                <kp>1000000.0</kp><kd>1.0</kd>
+                <minDepth>0.001</minDepth>
+            </gazebo>
+            <gazebo reference="rr_wheel_link">
+                <mu1>1.0</mu1><mu2>1.0</mu2>
+                <kp>1000000.0</kp><kd>1.0</kd>
+                <minDepth>0.001</minDepth>
+            </gazebo>
+
+            <!-- LiDAR 시뮬레이션 센서 (Gazebo Classic) -->
+            <gazebo reference="lidar_link">
+                <material>Gazebo/Green</material>
+                <sensor name="lidar" type="ray">
+                    <pose>0 0 0 0 0 0</pose>
+                    <visualize>true</visualize>
+                    <update_rate>10</update_rate>
+                    <ray>
+                        <scan>
+                            <horizontal>
+                                <samples>360</samples>
+                                <resolution>1</resolution>
+                                <min_angle>-3.14159</min_angle>
+                                <max_angle>3.14159</max_angle>
+                            </horizontal>
+                        </scan>
+                        <range>
+                            <min>0.15</min>
+                            <!--
+                            ⚠️ TODO: RPLidar A2M1 실제 최대 사거리 확인
+                                     A2M1 스펙: 최대 12m (일반 환경 ~8m)
+                            -->
+                            <max>12.0</max>
+                        </range>
+                    </ray>
+                    <plugin name="laser_controller" filename="libgazebo_ros_ray_sensor.so">
+                        <ros>
+                            <namespace>${namespace}</namespace>
+                            <argument>~/out:=scan</argument>
+                        </ros>
+                        <output_type>sensor_msgs/LaserScan</output_type>
+                        <!-- body.urdf.xacro 의 lidar_link 이름과 일치 -->
+                        <frame_name>lidar_link</frame_name>
+                    </plugin>
+                </sensor>
+            </gazebo>
+
+            <!--
+            ⚠️ TODO: Gemini336 RGB-D 카메라 시뮬레이션
+                     Gazebo에서 RGB-D는 depth camera 플러그인 사용
+                     실제 Gemini336의 FOV, 해상도를 데이터시트에서 확인하여 입력
+                     준비되면 아래 주석을 해제하세요
+
+            <gazebo reference="camera_link">
+                <sensor name="depth_camera" type="depth">
+                    <update_rate>30</update_rate>
+                    <camera>
+                        <horizontal_fov>1.2217</horizontal_fov>  <!- 70° FOV (라디안) ->
+                        <image>
+                            <width>640</width>
+                            <height>480</height>
+                            <format>R8G8B8</format>
+                        </image>
+                        <clip>
+                            <near>0.1</near>
+                            <far>5.0</far>   <!- Gemini336 최대 뎁스 범위 ->
+                        </clip>
+                    </camera>
+                    <plugin name="depth_camera_controller" filename="libgazebo_ros_camera.so">
+                        <!- Orbbec 드라이버의 frame_id와 일치해야 함 ->
+                        <frame_name>camera_optical_link</frame_name>
+                        <hack_baseline>0.07</hack_baseline>
+                    </plugin>
+                </sensor>
+            </gazebo>
+            -->
+
+        </xacro:if>
+
+    </xacro:macro>
+
+</robot>

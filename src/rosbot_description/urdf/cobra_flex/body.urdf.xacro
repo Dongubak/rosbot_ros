@@ -1,0 +1,329 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!--
+    ============================================================
+    Cobra Flex — 본체 구조 정의 (body.urdf.xacro)
+    ============================================================
+    포함 내용:
+      - 재료 (Materials)
+      - 관성 매크로 (Inertia Macros)
+      - 물리 치수 파라미터
+      - 링크 / 조인트 (base_link, chassis, 바퀴, IMU, LiDAR, 카메라)
+
+    ⚠️ TODO 항목 검색: 파일 내 "TODO" 를 검색하면 수정이 필요한 부분을 찾을 수 있음
+    ============================================================
+    -->
+
+    <!-- ═══════════════════════════════════════════════════════════
+         재료 (Materials)
+    ═══════════════════════════════════════════════════════════ -->
+    <material name="white">    <color rgba="1.0 1.0 1.0 1.0"/></material>
+    <material name="dark_gray"><color rgba="0.2 0.2 0.2 1.0"/></material>
+    <material name="blue">     <color rgba="0.0 0.0 1.0 1.0"/></material>
+    <material name="green">    <color rgba="0.0 0.8 0.0 1.0"/></material>
+    <material name="red">      <color rgba="0.8 0.0 0.0 1.0"/></material>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         물리 치수 파라미터 — 실측값 기반
+         (원본: .cobra_flex/robot_core.xacro 에서 변환)
+    ═══════════════════════════════════════════════════════════ -->
+
+    <!-- 바퀴 치수 -->
+    <xacro:property name="wheel_radius" value="0.03725"/>   <!-- 0.0745m / 2 -->
+    <xacro:property name="wheel_width"  value="0.02"/>      <!-- 바퀴 두께 (m) -->
+
+    <!-- 섀시 치수 -->
+    <xacro:property name="chassis_x" value="0.203"/>        <!-- 전후 길이 (m) -->
+    <xacro:property name="chassis_y" value="0.106"/>        <!-- 좌우 폭 (m) -->
+    <xacro:property name="chassis_z" value="0.057"/>        <!-- 높이 (m) -->
+
+    <!--
+    base_link 기준 바퀴 중심 위치
+
+    좌표계 구조:
+      base_footprint (z=0, 바닥 지면)
+        └── base_link (z = +wheel_radius = +0.03725m, 바퀴 축 높이)
+              └── wheel_joint (z = wheel_z_offset, base_link 기준)
+
+    실측 방법:
+      x_offset: 로봇 전후 중심에서 바퀴 중심까지 수평 거리
+      y_offset: 로봇 좌우 중심에서 바퀴 중심까지 수평 거리
+      z_offset: 바닥에서 바퀴 축까지 높이 - wheel_radius
+                (base_link가 이미 wheel_radius 높이에 있으므로 차감)
+                → 바퀴가 바닥에 평평하게 닿는 경우 ≈ 0
+
+    wheel_separation (controllers.yaml) = wheel_y_offset × 2 = 0.153 m
+    -->
+    <xacro:property name="wheel_x_offset" value="0.077"/>  <!-- 전후 오프셋 (base_link 기준, m) -->
+    <xacro:property name="wheel_y_offset" value="0.0775"/> <!-- 좌우 오프셋 (base_link 기준, m) -->
+    <xacro:property name="wheel_z_offset" value="0.0"/>    <!-- 높이 오프셋 (base_link 기준, m)
+                                                                base_link = wheel_radius 높이이므로
+                                                                평지 주행 시 0이 정상
+                                                                ⚠️ 바퀴 축이 섀시 중심과 다른 높이면 조정 -->
+
+    <!--
+    LiDAR 위치 (base_link 기준)
+    계산: chassis 기준 (0.141188, 0, 0.1468) → base_link 기준으로 변환
+          x = -chassis_x/2 + 0.141188 = -0.1015 + 0.141188 = 0.039688
+          z = 0.1448 + white_plate_thickness(0.002) = 0.1468
+
+    -->
+    <xacro:property name="lidar_x" value="0.039688"/>  <!-- base_link 기준 (m) -->
+    <xacro:property name="lidar_y" value="0.0"/>        <!-- 중앙 정렬 (m) -->
+    <xacro:property name="lidar_z" value="0.1468"/>     <!-- base_link 기준 (m) -->
+
+    <!--
+    카메라 위치 (base_link 기준)
+    계산: chassis 기준 (0.230158, 0, 0.0726962) → base_link 기준으로 변환
+          x = -chassis_x/2 + 0.230158 = -0.1015 + 0.230158 = 0.128658
+
+    -->
+    <xacro:property name="camera_x"         value="0.128658"/>  <!-- base_link 기준 (m) -->
+    <xacro:property name="camera_y"         value="0.0"/>        <!-- 중앙 정렬 (m) -->
+    <xacro:property name="camera_z"         value="0.0726962"/>  <!-- base_link 기준 (m) -->
+    <xacro:property name="camera_thickness" value="0.031"/>      <!-- Gemini336 전후 두께 (m) -->
+    <xacro:property name="camera_width"     value="0.090"/>      <!-- Gemini336 좌우 폭 (m) -->
+    <xacro:property name="camera_height"    value="0.022"/>      <!-- Gemini336 상하 높이 (m) -->
+
+    <!--
+    IMU 위치 (base_link 기준)
+
+    ⚠️ TODO: 추후 실측 예정
+    -->
+    <xacro:property name="imu_x"   value="0.0"/>    <!-- ← 실측 필요 -->
+    <xacro:property name="imu_y"   value="0.0"/>    <!-- ← 실측 필요 -->
+    <xacro:property name="imu_z"   value="0.0"/>    <!-- ← 실측 필요 -->
+    <xacro:property name="imu_rpy" value="0 0 0"/>  <!-- ← IMU 장착 방향 확인 필요 -->
+
+    <!-- ═══════════════════════════════════════════════════════════
+         관성 매크로 (Inertia Macros)
+         균질 강체 가정 — 정확한 값은 CAD 또는 실측으로 계산
+    ═══════════════════════════════════════════════════════════ -->
+    <xacro:macro name="inertial_box" params="mass x y z *origin">
+        <inertial>
+            <xacro:insert_block name="origin"/>
+            <mass value="${mass}"/>
+            <inertia
+                ixx="${(1/12)*mass*(y*y+z*z)}" ixy="0" ixz="0"
+                iyy="${(1/12)*mass*(x*x+z*z)}" iyz="0"
+                izz="${(1/12)*mass*(x*x+y*y)}"/>
+        </inertial>
+    </xacro:macro>
+
+    <xacro:macro name="inertial_cylinder" params="mass radius length *origin">
+        <inertial>
+            <xacro:insert_block name="origin"/>
+            <mass value="${mass}"/>
+            <inertia
+                ixx="${(1/12)*mass*(3*radius*radius+length*length)}" ixy="0" ixz="0"
+                iyy="${(1/12)*mass*(3*radius*radius+length*length)}" iyz="0"
+                izz="${(1/2)*mass*radius*radius}"/>
+        </inertial>
+    </xacro:macro>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         본체 매크로 (cobra_flex_body)
+         cobra_flex.urdf.xacro에서 <xacro:cobra_flex_body/> 로 호출됨
+    ═══════════════════════════════════════════════════════════ -->
+    <xacro:macro name="cobra_flex_body">
+
+        <!-- ── 기준 프레임 ──────────────────────────────────────────
+             base_footprint: 로봇 정사영(Ground projection) — 내비게이션 기준
+             base_link:      로봇 운동 기준점 (바퀴 축 높이, 4바퀴 중심)
+        ──────────────────────────────────────────────────────────── -->
+        <link name="base_footprint"/>
+
+        <joint name="base_footprint_joint" type="fixed">
+            <parent link="base_footprint"/>
+            <child  link="base_link"/>
+            <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0"/>
+        </joint>
+
+        <link name="base_link"/>
+
+        <!-- ── 섀시 ────────────────────────────────────────────────
+             chassis_joint origin의 x 오프셋:
+               base_link는 4바퀴 중심 → 섀시 기하 중심과 일치시키기 위해
+               chassis를 -chassis_x/2 만큼 이동
+        ──────────────────────────────────────────────────────────── -->
+        <joint name="chassis_joint" type="fixed">
+            <parent link="base_link"/>
+            <child  link="chassis"/>
+            <origin xyz="${-chassis_x/2} 0 0" rpy="0 0 0"/>
+        </joint>
+
+        <link name="chassis">
+            <visual>
+                <origin xyz="${chassis_x/2} 0 ${chassis_z/2}"/>
+                <geometry><box size="${chassis_x} ${chassis_y} ${chassis_z}"/></geometry>
+                <material name="white"/>
+            </visual>
+            <collision>
+                <origin xyz="${chassis_x/2} 0 ${chassis_z/2}"/>
+                <geometry><box size="${chassis_x} ${chassis_y} ${chassis_z}"/></geometry>
+            </collision>
+            <!--
+            ⚠️ TODO: 섀시 실제 질량(kg)으로 수정하세요
+                     현재 추정값: 0.8 kg (배터리 포함 예상치)
+                     측정 방법: 저울로 전체 로봇 무게 측정 후 센서/바퀴 무게 제외
+            -->
+            <xacro:inertial_box mass="0.8" x="${chassis_x}" y="${chassis_y}" z="${chassis_z}">
+                <origin xyz="${chassis_x/2} 0 ${chassis_z/2}" rpy="0 0 0"/>
+            </xacro:inertial_box>
+        </link>
+
+        <!-- ── 바퀴 매크로 ──────────────────────────────────────────
+             rosbot_ros 관례:
+               fl = front-left  (앞 왼쪽)    fr = front-right (앞 오른쪽)
+               rl = rear-left   (뒤 왼쪽)    rr = rear-right  (뒤 오른쪽)
+
+             ⚠️ 중요: controllers.yaml 의 이름과 반드시 일치해야 함
+               left_wheel_names:  [fl_wheel_joint, rl_wheel_joint]
+               right_wheel_names: [fr_wheel_joint, rr_wheel_joint]
+
+             파라미터:
+               prefix  — fl / fr / rl / rr
+               x_sign  — +1(앞) / -1(뒤)
+               y_sign  — +1(왼쪽) / -1(오른쪽)
+        ──────────────────────────────────────────────────────────── -->
+        <xacro:macro name="wheel" params="prefix x_sign y_sign">
+            <joint name="${prefix}_wheel_joint" type="continuous">
+                <parent link="base_link"/>
+                <child  link="${prefix}_wheel_link"/>
+                <origin xyz="${x_sign * wheel_x_offset}
+                              ${y_sign * wheel_y_offset}
+                              ${wheel_z_offset}"
+                        rpy="${-pi/2} 0 0"/>
+                <axis xyz="0 0 1"/>
+            </joint>
+
+            <link name="${prefix}_wheel_link">
+                <visual>
+                    <geometry>
+                        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+                    </geometry>
+                    <material name="dark_gray"/>
+                </visual>
+                <collision>
+                    <geometry>
+                        <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+                    </geometry>
+                </collision>
+                <!--
+                ⚠️ TODO: 바퀴 실제 질량(kg)으로 수정하세요 (현재 추정값: 0.1 kg)
+                -->
+                <xacro:inertial_cylinder mass="0.1" radius="${wheel_radius}" length="${wheel_width}">
+                    <origin xyz="0 0 0" rpy="0 0 0"/>
+                </xacro:inertial_cylinder>
+            </link>
+        </xacro:macro>
+
+        <!-- x_sign: +1=앞, -1=뒤 / y_sign: +1=왼쪽(양의 y), -1=오른쪽(음의 y) -->
+        <xacro:wheel prefix="fl" x_sign=" 1" y_sign=" 1"/>
+        <xacro:wheel prefix="fr" x_sign=" 1" y_sign="-1"/>
+        <xacro:wheel prefix="rl" x_sign="-1" y_sign=" 1"/>
+        <xacro:wheel prefix="rr" x_sign="-1" y_sign="-1"/>
+
+        <!-- ── IMU ──────────────────────────────────────────────────
+             imu_link: IMU 센서 물리 위치
+             EKF와 imu_sensor_broadcaster가 이 frame_id를 사용함
+
+             ⚠️ TODO: 위의 imu_x, imu_y, imu_z property 값을 실측하여 수정
+                      IMU 방향(rpy)도 로봇 좌표계와 일치하는지 확인 필요
+                        - IMU x축 = 로봇 전방(+x)
+                        - IMU y축 = 로봇 좌측(+y)
+                        - IMU z축 = 로봇 상방(+z)
+                      방향이 다르면 imu_rpy 값을 조정하세요
+        ──────────────────────────────────────────────────────────── -->
+        <joint name="imu_joint" type="fixed">
+            <parent link="base_link"/>
+            <child  link="imu_link"/>
+            <origin xyz="${imu_x} ${imu_y} ${imu_z}" rpy="${imu_rpy}"/>
+        </joint>
+
+        <link name="imu_link"/>
+
+        <!-- ── LiDAR (RPLidar A2M1) ────────────────────────────────
+             frame_id 이름 규칙:
+               URDF 링크 이름 = rplidar_ros 드라이버의 frame_id 파라미터
+               → bringup.launch.py 에서 frame_id: 'lidar_link' 설정 필요
+
+             ⚠️ TODO: 위의 lidar_x, lidar_z property 값이 실측과 맞는지 확인
+                      RPLidar A2M1은 스캔 평면이 센서 중앙에 위치함
+                      장착 방향이 뒤집혔으면 rpy="0 0 ${pi}" 추가
+        ──────────────────────────────────────────────────────────── -->
+        <joint name="lidar_joint" type="fixed">
+            <parent link="base_link"/>
+            <child  link="lidar_link"/>
+            <origin xyz="${lidar_x} ${lidar_y} ${lidar_z}" rpy="0 0 0"/>
+        </joint>
+
+        <link name="lidar_link">
+            <visual>
+                <!-- RPLidar A2M1 외형 근사 (원통형) -->
+                <geometry><cylinder radius="0.0385" length="0.019"/></geometry>
+                <material name="green"/>
+            </visual>
+            <collision>
+                <geometry><cylinder radius="0.0385" length="0.019"/></geometry>
+            </collision>
+            <xacro:inertial_cylinder mass="0.1" radius="0.0385" length="0.019">
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+            </xacro:inertial_cylinder>
+        </link>
+
+        <!-- ── 카메라 (Gemini336) ─────────────────────────────────
+             RGB-D 카메라에는 두 프레임이 필요:
+               camera_link:         카메라 물리 위치 (URDF 좌표계)
+               camera_optical_link: ROS 광학 좌표계
+                                    (Z=전방, X=우측, Y=하방)
+                                    Orbbec 드라이버는 이 프레임을 frame_id로 사용
+
+             ⚠️ TODO: 위의 camera_x, camera_z property 값이 실측과 맞는지 확인
+                      Gemini336 실제 크기: 대략 100mm × 24mm × 35mm
+                      camera_width, camera_height 도 실측값으로 수정하세요
+        ──────────────────────────────────────────────────────────── -->
+        <joint name="camera_joint" type="fixed">
+            <parent link="base_link"/>
+            <child  link="camera_link"/>
+            <origin xyz="${camera_x} ${camera_y} ${camera_z}" rpy="0 0 0"/>
+        </joint>
+
+        <link name="camera_link">
+            <visual>
+                <geometry>
+                    <box size="${camera_thickness} ${camera_width} ${camera_height}"/>
+                </geometry>
+                <material name="red"/>
+            </visual>
+            <collision>
+                <geometry>
+                    <box size="${camera_thickness} ${camera_width} ${camera_height}"/>
+                </geometry>
+            </collision>
+            <!--
+            ⚠️ TODO: Gemini336 실제 질량(kg)으로 수정하세요 (현재 추정값: 0.05 kg)
+            -->
+            <xacro:inertial_box mass="0.05"
+                x="${camera_thickness}" y="${camera_width}" z="${camera_height}">
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+            </xacro:inertial_box>
+        </link>
+
+        <!--
+        카메라 광학 프레임 (Orbbec 드라이버가 이 frame_id로 이미지 발행)
+        변환: ROS 좌표계(X앞, Y왼, Z위) → 광학 좌표계(Z앞, X오, Y아래)
+              rpy = (-π/2, 0, -π/2) 으로 표준 변환
+        -->
+        <joint name="camera_optical_joint" type="fixed">
+            <parent link="camera_link"/>
+            <child  link="camera_optical_link"/>
+            <origin xyz="0 0 0" rpy="${-pi/2} 0 ${-pi/2}"/>
+        </joint>
+
+        <link name="camera_optical_link"/>
+
+    </xacro:macro>
+
+</robot>

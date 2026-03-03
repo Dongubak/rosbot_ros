@@ -1,0 +1,24 @@
+---
+name: CI
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+
+  pre-commit:
+    name: Pre-commit
+    uses: ros-controls/ros2_control_ci/.github/workflows/reusable-pre-commit.yml@master
+    with:
+      ros_distro: jazzy
+
+  ros_test:
+    name: ROS Test
+    uses: ./.github/workflows/run-tests.yaml
+
+  bump:
+    name: Bump
+    needs: ros_test
+    if: github.ref == 'refs/heads/jazzy'
+    uses: ./.github/workflows/bump.yaml
+    secrets: inherit
