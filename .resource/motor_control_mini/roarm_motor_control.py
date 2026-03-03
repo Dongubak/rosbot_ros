@@ -24,3 +24,4 @@ if __name__ == "__main__":
     print(f"Moving to X={x}, Z={z}...")
     result = move(x, z)
     print(f"Response: {result}")
+g
