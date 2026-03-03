@@ -89,11 +89,10 @@
     <!--
     IMU 위치 (base_link 기준)
 
-    ⚠️ TODO: 추후 실측 예정
     -->
-    <xacro:property name="imu_x"   value="0.0"/>    <!-- ← 실측 필요 -->
-    <xacro:property name="imu_y"   value="0.0"/>    <!-- ← 실측 필요 -->
-    <xacro:property name="imu_z"   value="0.0"/>    <!-- ← 실측 필요 -->
+    <xacro:property name="lidar_x" value="0.08724"/>  <!-- base_link 기준 (m) -->
+    <xacro:property name="lidar_y" value="0.00352"/>        <!-- 중앙 정렬 (m) -->
+    <xacro:property name="lidar_z" value="0.07901"/>     <!-- base_link 기준 (m) -->
     <xacro:property name="imu_rpy" value="0 0 0"/>  <!-- ← IMU 장착 방향 확인 필요 -->
 
     <!-- ═══════════════════════════════════════════════════════════
@@ -150,7 +149,7 @@
         <joint name="chassis_joint" type="fixed">
             <parent link="base_link"/>
             <child  link="chassis"/>
-            <origin xyz="${-chassis_x/2} 0 0" rpy="0 0 0"/>
+            <origin xyz="${-chassis_x/2} 0 -0.0031 " rpy="0 0 0"/>
         </joint>
 
         <link name="chassis">
@@ -168,7 +167,7 @@
                      현재 추정값: 0.8 kg (배터리 포함 예상치)
                      측정 방법: 저울로 전체 로봇 무게 측정 후 센서/바퀴 무게 제외
             -->
-            <xacro:inertial_box mass="0.8" x="${chassis_x}" y="${chassis_y}" z="${chassis_z}">
+            <xacro:inertial_box mass="0.824" x="${chassis_x}" y="${chassis_y}" z="${chassis_z}">
                 <origin xyz="${chassis_x/2} 0 ${chassis_z/2}" rpy="0 0 0"/>
             </xacro:inertial_box>
         </link>
@@ -213,7 +212,7 @@
                 <!--
                 ⚠️ TODO: 바퀴 실제 질량(kg)으로 수정하세요 (현재 추정값: 0.1 kg)
                 -->
-                <xacro:inertial_cylinder mass="0.1" radius="${wheel_radius}" length="${wheel_width}">
+                <xacro:inertial_cylinder mass="0.4" radius="${wheel_radius}" length="${wheel_width}">
                     <origin xyz="0 0 0" rpy="0 0 0"/>
                 </xacro:inertial_cylinder>
             </link>
@@ -268,7 +267,7 @@
             <collision>
                 <geometry><cylinder radius="0.0385" length="0.019"/></geometry>
             </collision>
-            <xacro:inertial_cylinder mass="0.1" radius="0.0385" length="0.019">
+            <xacro:inertial_cylinder mass="0.19" radius="0.0385" length="0.019">
                 <origin xyz="0 0 0" rpy="0 0 0"/>
             </xacro:inertial_cylinder>
         </link>
@@ -305,7 +304,7 @@
             <!--
             ⚠️ TODO: Gemini336 실제 질량(kg)으로 수정하세요 (현재 추정값: 0.05 kg)
             -->
-            <xacro:inertial_box mass="0.05"
+            <xacro:inertial_box mass="0.1"
                 x="${camera_thickness}" y="${camera_width}" z="${camera_height}">
                 <origin xyz="0 0 0" rpy="0 0 0"/>
             </xacro:inertial_box>

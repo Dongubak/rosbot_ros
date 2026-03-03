@@ -11,10 +11,14 @@
             "id": "e2c7ae2e0246892b",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "src/doc/11_Cobra_Flex_적용_일정.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "새 탭"
+              "title": "11_Cobra_Flex_적용_일정"
             }
           }
         ]
@@ -181,6 +185,7 @@
   },
   "active": "e2c7ae2e0246892b",
   "lastOpenFiles": [
+    "src/doc/10_Cobra_Flex_적용_가이드.md",
     "doc/11_Cobra_Flex_적용_일정.md",
     "src/ROS_API.md",
     "src/README.md",
@@ -199,7 +204,6 @@
     "src/doc/용어집.md",
     "src/doc/index.md",
     "src/doc/11_Cobra_Flex_적용_일정.md",
-    "src/doc/10_Cobra_Flex_적용_가이드.md",
     "src/doc/09_사용_여부_정리.md",
     "src/doc/08_런치_시스템.md",
     "src/doc/07_로컬라이제이션.md",
