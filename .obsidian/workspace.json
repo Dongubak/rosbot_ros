@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "src/doc/11_Cobra_Flex_적용_일정.md",
+                "file": "src/doc/03_시스템_아키텍처.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "11_Cobra_Flex_적용_일정"
+              "title": "03_시스템_아키텍처"
             }
           }
         ]
@@ -185,7 +185,13 @@
   },
   "active": "e2c7ae2e0246892b",
   "lastOpenFiles": [
+    "src/doc/05_센서_통합.md",
+    "src/doc/04_하드웨어_인터페이스.md",
+    "src/doc/06_컨트롤러.md",
+    "src/doc/11_Cobra_Flex_적용_일정.md",
     "src/doc/10_Cobra_Flex_적용_가이드.md",
+    "src/rosbot_description/config/cobra_flex/basic.yaml",
+    "src/rosbot_description/config/cobra_flex",
     "doc/11_Cobra_Flex_적용_일정.md",
     "src/ROS_API.md",
     "src/README.md",
@@ -199,17 +205,11 @@
     "src/rosbot_utils/test/test_pep257.py",
     "src/rosbot_utils/rosbot_utils/utils.py",
     "src/rosbot_utils/rosbot_utils/flash_firmware_usb.py",
-    "src/rosbot_utils/rosbot_utils/flash_firmware_uart.py",
-    "src/rosbot_utils/rosbot_utils/flash_firmware.py",
     "src/doc/용어집.md",
     "src/doc/index.md",
-    "src/doc/11_Cobra_Flex_적용_일정.md",
     "src/doc/09_사용_여부_정리.md",
     "src/doc/08_런치_시스템.md",
     "src/doc/07_로컬라이제이션.md",
-    "src/doc/06_컨트롤러.md",
-    "src/doc/05_센서_통합.md",
-    "src/doc/04_하드웨어_인터페이스.md",
     "src/doc/03_시스템_아키텍처.md",
     "src/doc/02_패키지_구조.md",
     "src/doc/01_프로젝트_개요.md",
@@ -219,7 +219,6 @@
     "doc/09_사용_여부_정리.md",
     "doc/08_런치_시스템.md",
     "doc/07_로컬라이제이션.md",
-    "doc/06_컨트롤러.md",
-    "doc/05_센서_통합.md"
+    "doc/06_컨트롤러.md"
   ]
 }

@@ -1,0 +1,5 @@
+teleop_bridge:
+  ros__parameters:
+    controller_ip: "192.168.0.44"
+    cmd_t: 13
+    timeout: 1.0

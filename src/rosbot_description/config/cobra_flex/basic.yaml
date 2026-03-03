@@ -1,0 +1,4 @@
+---
+# Cobra Flex has no external Husarion component modules.
+# Sensors (RPLidar A2M1, Orbbec Gemini336) are defined directly in the URDF.
+components: []

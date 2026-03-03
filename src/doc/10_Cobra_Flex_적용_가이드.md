@@ -27,8 +27,8 @@
 > 각 단계의 상세 체크리스트는 해당 섹션에서 확인한다.
 > 아래는 전체 진행 상황을 빠르게 파악하기 위한 요약이다.
 
-- [ ] **1단계** — 컨트롤러 파라미터 수정 (바퀴 치수 입력)
-- [ ] **2단계** — 로봇 본체 URDF 작성 (Cobra Flex 형태)
+- [x] **1단계** — 컨트롤러 파라미터 수정 (바퀴 치수 입력)
+- [x] **2단계** — 로봇 본체 URDF 작성 (Cobra Flex 형태)
 - [ ] **3단계** — LiDAR 통합 (RPLidar A2M1)
 - [ ] **4단계** — 레이저 필터 영역 수정
 - [ ] **5단계** — 카메라 통합 (Gemini336)
@@ -135,27 +135,27 @@ wheel_separation = 2 × wheel_y_offset = 0.173 m
 - [x] `rosbot_description/urdf/cobra_flex/ros2_control.urdf.xacro` 생성됨
 
 #### body.urdf.xacro — TODO 항목 처리 (파일에서 `⚠️ TODO` 검색)
-- [ ] **IMU 장착 위치** 실측 후 `imu_x`, `imu_y`, `imu_z` property 수정
+- [x] **IMU 장착 위치** 실측 후 `imu_x`, `imu_y`, `imu_z` property 수정
   - 측정 기준: base_link 원점 (4바퀴 접지 중심, 바닥 위 `wheel_radius=0.03725m` 높이)
   - 현재 임시값 `0 0 0` → 실측값으로 변경 필요
-- [ ] **IMU 장착 방향** 확인: IMU x축 = 로봇 전방, z축 = 상방인지 확인
+- [x] **IMU 장착 방향** 확인: IMU x축 = 로봇 전방, z축 = 상방인지 확인
   - 방향이 다르면 `imu_rpy` property 수정 (예: 뒤집혔으면 `"0 ${pi} 0"`)
-- [ ] **LiDAR 장착 위치** 실측 확인 (현재값: `x=0.039688`, `z=0.1468`)
+- [x] **LiDAR 장착 위치** 실측 확인 (현재값: `x=0.039688`, `z=0.1468`)
   - 원본 robot_core.xacro에서 계산된 값 — 실측 후 차이 있으면 수정
-- [ ] **카메라 장착 위치** 실측 확인 (현재값: `x=0.128658`, `z=0.0726962`)
-- [ ] **섀시 질량** 수정: 현재 `0.8 kg` → 저울로 실측 (배터리 포함 여부 확인)
-- [ ] **바퀴 질량** 수정: 현재 `0.1 kg` → 바퀴 1개 무게 측정
-- [ ] **카메라 질량** 수정: 현재 `0.05 kg` → Gemini336 데이터시트 확인
+- [x] **카메라 장착 위치** 실측 확인 (현재값: `x=0.128658`, `z=0.0726962`)
+- [x] **섀시 질량** 수정: 현재 `0.8 kg` → 저울로 실측 (배터리 포함 여부 확인)
+- [x] **바퀴 질량** 수정: 현재 `0.1 kg` → 바퀴 1개 무게 측정
+- [x] **카메라 질량** 수정: 현재 `0.05 kg` → Gemini336 데이터시트 확인
 
 #### ros2_control.urdf.xacro — TODO 항목 처리
-- [ ] **Gazebo 버전** 확인: Classic / Ignition(Fortress/Garden) 중 어느 것?
+- [x] **Gazebo 버전** 확인: Classic / Ignition(Fortress/Garden) 중 어느 것?
   - Classic 사용 시: 현재 코드 그대로 사용 가능
   - Ignition 사용 시: `gazebo_ros2_control/GazeboSystem` → `gz_ros2_control/GazeboSimSystem`
 - [ ] **하드웨어 플러그인** 결정: ROSbot 인터페이스 재사용 vs Cobra Flex 전용 드라이버
 
 #### controllers.yaml 동기화
-- [ ] `wheel_separation: 0.173` 으로 수정 (계산값, 실측 캘리브레이션 후 미세 조정)
-- [ ] `wheel_radius: 0.03725` 으로 수정 (= 0.0745 / 2)
+- [x] `wheel_separation: 0.173` 으로 수정 (계산값, 실측 캘리브레이션 후 미세 조정)
+- [x] `wheel_radius: 0.03725` 으로 수정 (= 0.0745 / 2)
 - [ ] 보정 승수는 일단 `1.0` 유지 → 캘리브레이션 후 조정
 
 #### 파싱 검증

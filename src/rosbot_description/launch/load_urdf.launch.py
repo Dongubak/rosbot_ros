@@ -161,7 +161,7 @@ def generate_launch_description():
         "robot_model",
         default_value=EnvironmentVariable("ROBOT_MODEL_NAME", default_value=""),
         description="Specify robot model",
-        choices=["rosbot", "rosbot_xl"],
+        choices=["rosbot", "rosbot_xl", "cobra_flex"],
     )
 
     publish_robot_description = OpaqueFunction(function=launch_setup)

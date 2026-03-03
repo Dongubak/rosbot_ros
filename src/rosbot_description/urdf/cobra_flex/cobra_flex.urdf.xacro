@@ -18,6 +18,14 @@
     <xacro:arg name="use_sim"   default="false"/>
     <xacro:arg name="namespace" default=""/>
 
+    <!-- load_urdf.launch.py 호환용 — cobra_flex에서는 사용하지 않음 -->
+    <xacro:arg name="components_config"       default=""/>
+    <xacro:arg name="configuration"           default="basic"/>
+    <xacro:arg name="controller_config"       default=""/>
+    <xacro:arg name="include_camera_mount"    default="False"/>
+    <xacro:arg name="manipulator_serial_port" default="/dev/ttyUSB0"/>
+    <xacro:arg name="mecanum"                 default="False"/>
+
     <!-- ── 하위 파일 포함 ─────────────────────────────────────── -->
     <xacro:include filename="$(find rosbot_description)/urdf/cobra_flex/body.urdf.xacro"/>
     <xacro:include filename="$(find rosbot_description)/urdf/cobra_flex/ros2_control.urdf.xacro"/>
